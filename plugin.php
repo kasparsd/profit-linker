@@ -19,7 +19,13 @@ function enqueue_envato_aff_linker() {
 
 	$domains = array(
 		'codecanyon.net',
-		'themeforest.com'
+		'themeforest.net',
+		'graphicriver.net',
+		'videohive.net',
+		'photodune.net',
+		'3docean.net',
+		'audiojungle.net',
+		'activeden.net'
 	);
 
 	wp_enqueue_script(
