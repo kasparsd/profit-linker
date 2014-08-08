@@ -20,7 +20,9 @@ class profitAffLinker {
 
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'admin_init', array( $this, 'register_settings' ) );
+
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
 	}
 
@@ -39,6 +41,7 @@ class profitAffLinker {
 				'envato' => array(
 					'label' => __( 'Envato' ),
 					'domains' => array(
+						'envato.com',
 						'codecanyon.net',
 						'themeforest.net',
 						'graphicriver.net',
@@ -48,21 +51,24 @@ class profitAffLinker {
 						'audiojungle.net',
 						'activeden.net'
 					),
-					'arg' => 'ref'
+					'arg' => 'ref',
+					'signup' => 'https://account.envato.com/sign_up?ref=Preseto'
 				),
 				'amazon' => array(
 					'label' => __( 'Amazon' ),
 					'domains' => array(
 						'amazon.'
 					),
-					'arg' => 'tag'
+					'arg' => 'tag',
+					'signup' => 'https://affiliate-program.amazon.com'
 				),
 				'ebay' => array(
 					'label' => __( 'eBay' ),
 					'domains' => array(
 						'ebay.'
 					),
-					'arg' => 'pub'
+					'arg' => 'pub',
+					'signup' => 'https://www.ebaypartnernetwork.com'
 				)
 			);
 
@@ -77,8 +83,8 @@ class profitAffLinker {
 
 	function enqueue_scripts() {
 		
-		wp_enqueue_script(
-			'profit-aff-linker',
+		wp_register_script(
+			'profit-linker',
 			plugins_url( '/profit-linker.js', __FILE__ ),
 			null,
 			'1.1',
@@ -87,15 +93,22 @@ class profitAffLinker {
 
 		$settings = array();
 
-		foreach ( $this->affs as $network => $aff_settings )
-			foreach ( $aff_settings['domains'] as $domain )
-				if ( isset( $this->settings['networks'][ $network ]['tag'] ) && ! empty( $this->settings['networks'][ $network ]['tag'] ) )
+		// Include only affiliate networks with defined affiliate tag
+		foreach ( $this->affs as $network => $aff_settings ) {
+			foreach ( $aff_settings['domains'] as $domain ) {
+				if ( isset( $this->settings['networks'][ $network ]['tag'] ) && ! empty( $this->settings['networks'][ $network ]['tag'] ) ) {
 					$settings[ $domain ] = array(
 							$aff_settings['arg'] => $this->settings['networks'][ $network ]['tag']
 						);
+				}
+			}
+		}
+
+		if ( ! empty( $settings ) )
+			wp_enqueue_script( 'profit-linker' );
 
 		wp_localize_script(
-			'profit-aff-linker',
+			'profit-linker',
 			'profit_linker',
 			$settings
 		);
@@ -103,8 +116,25 @@ class profitAffLinker {
 	}
 
 
+	function admin_enqueue_scripts( $hook ) {
 
-	function register_settings() {
+		if ( 'options-general.php' !== $hook )
+			return;
+
+		wp_enqueue_style( 
+			'profit-linker-css',
+			plugin_dir_url( __FILE__ ) . 'style-admin.css' 
+		);
+
+	}
+
+
+	function admin_init() {
+
+		register_setting( 
+			'general', 
+			'profit_aff_settings'
+		);
 
 		add_settings_field(
 			'profit_aff_settings',
@@ -113,9 +143,8 @@ class profitAffLinker {
 			'general'
 		);
 
-		register_setting( 'general', 'profit_aff_settings' );
-
 	}
+
 
 	function admin_settings( $args ) {
 
@@ -134,15 +163,17 @@ class profitAffLinker {
 							<strong>%s</strong>
 							<input type="text" name="profit_aff_settings[networks][%s][tag]" value="%s" />
 						</label>
+						<span class="signup"><a href="%s">Sign-up</a></span>
 					</li>',
 					esc_html( $aff_settings['label'] ),
 					esc_attr( $network ),
-					esc_attr( $tag )
+					esc_attr( $tag ),
+					esc_url( $aff_settings['signup'] )
 				);
 
 		}
 
-		printf( '<ul>%s</ul>', implode( '', $items ) );
+		printf( '<ul class="profit-linker">%s</ul>', implode( '', $items ) );
 
 	}
 
