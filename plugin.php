@@ -4,7 +4,7 @@
 	Description: Automatically turns all Envato, Amazon, eBay, etc. store links into affiliate links.
 	Author: Kaspars Dambis
 	Author URI: http://kaspars.net
-	Version: 1.1
+	Version: 1.2
 */
 
 
