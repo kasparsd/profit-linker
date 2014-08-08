@@ -1,7 +1,7 @@
 <?php
 /*
 	Plugin Name: Profit Affiliate Linker
-	Description: Automatically turns all Envato, Amazon, eBay, etc. store links into affiliate links.
+	Description: Automatically turns all Envato, Amazon, eBay, etc. store and product links into affiliate links.
 	Author: Kaspars Dambis
 	Author URI: http://kaspars.net
 	Version: 1.2
@@ -39,7 +39,7 @@ class profitAffLinker {
 
 		$this->affs = array(
 				'envato' => array(
-					'label' => __( 'Envato' ),
+					'label' => 'Envato',
 					'domains' => array(
 						'envato.com',
 						'codecanyon.net',
@@ -55,7 +55,7 @@ class profitAffLinker {
 					'signup' => 'https://account.envato.com/sign_up?ref=Preseto'
 				),
 				'amazon' => array(
-					'label' => __( 'Amazon' ),
+					'label' => 'Amazon',
 					'domains' => array(
 						'amazon.'
 					),
@@ -63,7 +63,7 @@ class profitAffLinker {
 					'signup' => 'https://affiliate-program.amazon.com'
 				),
 				'ebay' => array(
-					'label' => __( 'eBay' ),
+					'label' => 'eBay',
 					'domains' => array(
 						'ebay.'
 					),
