@@ -18,7 +18,7 @@ class profitAffLinker {
 
 	private function __construct() {
 
-		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'init', array( $this, 'init' ), 15 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -71,6 +71,12 @@ class profitAffLinker {
 					'signup' => 'https://www.ebaypartnernetwork.com'
 				)
 			);
+
+		// Allow other plugins
+		$this->affs = apply_filters( 'profit_linker_networks', $this->affs );
+
+		// Sort by network name
+		ksort( $this->affs );
 
 		$this->settings = wp_parse_args(
 				get_option( 'profit_aff_settings' ),
@@ -138,7 +144,7 @@ class profitAffLinker {
 
 		add_settings_field(
 			'profit_aff_settings',
-			__( 'Profit Linker Settings', 'profit-aff-linker' ),
+			__( 'Profit Linker', 'profit-aff-linker' ),
 			array( $this, 'admin_settings' ),
 			'general'
 		);
@@ -163,12 +169,13 @@ class profitAffLinker {
 							<strong>%s</strong>
 							<input type="text" name="profit_aff_settings[networks][%s][tag]" value="%s" />
 						</label>
-						<span class="signup"><a href="%s">Sign-up</a></span>
+						<span class="signup"><a href="%s">%s</a></span>
 					</li>',
 					esc_html( $aff_settings['label'] ),
 					esc_attr( $network ),
 					esc_attr( $tag ),
-					esc_url( $aff_settings['signup'] )
+					esc_url( $aff_settings['signup'] ),
+					esc_html( parse_url( $aff_settings['signup'], PHP_URL_HOST ) )
 				);
 
 		}

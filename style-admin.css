@@ -1,4 +1,4 @@
 .profit-linker { margin:0; padding:0; }
 .profit-linker li { margin:0; padding:0.3em 0; padding-left:10em; }
-.profit-linker label strong { display:inline-block; font-weight:normal; position:relative; left:-10em; margin:0 -10em 0 0; width:9em; }
+.profit-linker label strong { display:block; float:left; font-weight:normal; position:relative; left:-10em; margin:0.3em -10em 0 0; width:9em; }
 .profit-linker .signup { color:#999; font-size:0.9em; }
